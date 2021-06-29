@@ -1,0 +1,32 @@
+{
+    "schema" :
+    {
+        "attributes":[
+            {
+                "name":"id_item",
+                "type":"int",
+                "length":11,
+                "null":0
+            },
+            {
+                "name":"calificacion",
+                "type":"int",
+                "length":11,
+                "null":0
+            },
+            
+            {
+                "name":"tabla",
+                "type":"varchar",
+                "length":255,
+                "null":0
+            }
+        ],
+        "config":{
+            "engine":"MyISAM"
+            
+        }
+    }
+    ,
+    "data":[]
+}

@@ -1,0 +1,79 @@
+<div class="content">
+    <div class="w-xxxx-12"><?php echo breadcrumbs(); ?> </div>
+        <div class="w-xxxx-12 cont_global_admin">
+        <h1 class="titulo_seccion_admin"><?php echo $title_grid; ?></h1>
+        <div class="w-xxxx-12 cont_header_panel">
+            <div class="_wrapp_form_serch">
+                <?php echo $MyFiltrosForm->openTag(); ?>
+                <?php echo $MyFiltrosForm->getAllRow(); ?>
+                <?php echo $MyFiltrosForm->endTag(); ?>
+                <?php if(!empty($frm_constante_link)): ?>
+                  <a href="<?php echo $MyRequest->url($frm_constante_link); ?>" class="_btn_new">Nuevo</a>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div  class="w-xxxx-12 cont_gral_admin <?php echo $class_grid; ?>">
+            <div >
+                <div class="w-xxxx-12">
+                    <div class="w-xxxx-12 contenedor_titulo_columnas">
+                        <?php $i = 1; ?>
+                        <?php foreach($titulo_columnas_grid as $k =>$v): ?>
+                        <div class="<?php echo (isset($css_columnas_grid[$k]) ? $css_columnas_grid[$k] : ""); ?>"><?php echo makeHTMLOrder( $k, $v);  ?></div>
+                        <?php endforeach; ?>
+                        <div class="w-xxxx-2">
+                              <?php if($MyAccessList->MeDasChancePasar($permisos_grid)):  ?>
+                                  Aprovar
+                              <?php endif; ?>
+                        </div>
+                       
+                    </div>
+                    <div class="contenedor_columnas_info"  >
+                    <div class="w-xxxx-12 contenedor_columnas"  >
+                        <?php $i = 1; ?>
+                        <?php foreach($value_columnas_grid as $k): ?>
+                        <div class="{{_data.thisClass}}   <?php echo (isset($css_columnas_grid[$k]) ? $css_columnas_grid[$k] : ""); ?>">{{_data.<?php echo $k;  ?>}}</div>
+                        <?php endforeach; ?>
+                        <div class='w-xxxx-2 {{_data.thisClass}}'>
+                            <?php if($MyAccessList->MeDasChancePasar($permisos_grid)):  ?>
+                            <a class="btn_adm_eliminar" data-id="{{_data.id}}" href="#desactivar" ></a>
+                            <a class="btn_adm_aceptar" data-id="{{_data.id}}" href="#activar" ><i class="icon icon-valido"></i></a>
+                            <?php endif; ?>
+                        </div>
+                        <div class='w-xxxx-12 _open_comment'>
+                            <a href="javascript:void(0);" onclick="$(this).next('div').toggle('slow'); $(this).parent('div').toggleClass('active');">Ver comentario</a>
+                            <div style="display:none;">
+                            {{_data.comentario}}
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="w-xxxx-12">
+                    <div class="no_hay_datos" ><?php echo $error_grid; ?></div>
+                </div>
+                <div class="w-xxxx-12">
+                    <?php echo render("admin/widget.paginar.phtml"); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script >
+<!--
+$(".contenedor_columnas_info").htmlDataDum(<?php echo json_encode($lista_admin_data); ?>,".no_hay_datos");
+$(window).load(function(){
+    $(".btn_adm_eliminar,.btn_adm_aceptar").click(function(event){
+
+         event.preventDefault();
+         var nuevo_estado = ($(this).attr("href").replace("#","") == "activar" ? 1 : 0);
+
+         EliminarRegistro('<?php echo $deleteFunction; ?>',$(this).attr("data-id"),nuevo_estado,"","EliminarRegistorPanelRemove")
+
+    });
+
+
+});
+// -->
+</script>

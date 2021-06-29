@@ -1,0 +1,84 @@
+{
+    "schema" :
+    {
+        "attributes":[
+            {
+                "name":"id",
+                "type":"int",
+                "length":11,
+                "null":0,
+                "auto_increment":1
+            },
+            {
+                "name":"id_item",
+                "type":"int",
+                "length":11,
+                "null":0
+            },
+            
+            {
+                "name":"tabla",
+                "type":"varchar",
+                "length":255,
+                "null":0
+            },
+            {
+                "name":"createdAt",
+                "type":"DATETIME",
+                "null":0
+            },
+            {
+                "name":"updateAt",
+                "type":"DATETIME",
+                "null":1
+            },
+            
+            {
+                "name":"status",
+                "type":"int",
+                "length":1,
+                "null":0,
+                "default":1
+            },
+            {
+                "name":"aprovado",
+                "type":"int",
+                "length":1,
+                "null":0,
+                "default":0
+            },
+            {
+                "name":"calificacion",
+                "type":"int",
+                "length":1,
+                "null":1
+            },
+            {
+                "name":"titulo",
+                "type":"varchar",
+                "length":255,
+                "null":1
+            },
+            {
+                "name":"comentario",
+                "type":"text",
+                "null":1
+            },
+            
+            {
+                "name":"status_admin",
+                "type":"int",
+                "length":1,
+                "null":0,
+                "default":1
+            }
+        ],
+        "config":{
+            "primary":"id",
+            "engine":"InnoDB"
+            
+        }
+    }
+    ,
+    "data":[]
+}

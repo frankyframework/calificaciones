@@ -1,0 +1,36 @@
+<div class="_cont_rating">
+    <?php echo $CalificacionesForm->openTag(); ?>
+    <?php echo $CalificacionesForm->get('callback'); ?>
+    <?php echo $CalificacionesForm->get('seccion'); ?>
+    <?php echo $CalificacionesForm->get('seccion_config'); ?>
+    <?php echo $CalificacionesForm->get('id_item'); ?>
+
+
+    <?php if(!$MySession->LoggedIn() && getCoreConfig($seccion.'/calificaciones/guest') == 1): ?>
+        <?php echo $CalificacionesForm->getRow('nombre'); ?>
+        <?php echo $CalificacionesForm->getRow('email'); ?>
+    <?php endif; ?>
+
+    <?php if(getCoreConfig($seccion.'/calificaciones/tipo') == 'calificacion' || getCoreConfig($seccion.'/calificaciones/tipo') == 'calificacion-comentario'): ?>
+        <?php echo $CalificacionesForm->get('calificacion'); ?>
+        <div id="rater" class="rater">
+        <div id="stars"></div>
+        <div class="clear"></div>
+        </div>
+        <script>
+            var r = new rating('stars', 5,  '' || 0 , true, 'calificacion');
+        </script>
+    <?php endif; ?>
+
+    <?php if(getCoreConfig($seccion.'/calificaciones/tipo') == 'comentario' || getCoreConfig($seccion.'/calificaciones/tipo') == 'calificacion-comentario'): ?>
+    <?php echo $CalificacionesForm->getRow('titulo'); ?>
+    <?php echo $CalificacionesForm->getRow('comentario'); ?>
+    <?php endif; ?>
+    <?php echo $CalificacionesForm->getRow('guardar'); ?>
+
+    <?php echo $CalificacionesForm->endTag(); ?>
+
+    <script>
+        $("#frmreview").validate();
+    </script>
+</div>

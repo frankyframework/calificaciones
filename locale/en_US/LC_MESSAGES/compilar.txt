@@ -1,0 +1,3 @@
+msgfmt calificaciones.po --output-file=calificaciones.mo
+Variables: _calificaciones("id")
+Cadenas: <?= _calificaciones('id') ?>

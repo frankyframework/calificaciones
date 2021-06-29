@@ -1,0 +1,46 @@
+{
+    "schema" :
+    {
+        "attributes":[
+            {
+                "name":"id_calificacion",
+                "type":"int",
+                "length":11,
+                "null":0,
+                "auto_increment":1
+            },
+           
+            {
+                "name":"nombre",
+                "type":"varchar",
+                "length":255,
+                "null":0
+            },
+            {
+                "name":"email",
+                "type":"varchar",
+                "length":255,
+                "null":0
+            }
+           
+        
+
+        ],
+        "config":{
+            "primary":"id_calificacion",
+            "engine":"InnoDB",
+            "keys":
+            {
+                "calificaciones_calificaciones" : {
+                    "foreing" : "id",
+                    "local":"id_calificacion",
+                    "delete":"CASCADE",
+                    "update":"CASCADE"
+                }
+            }
+            
+        }
+    }
+    ,
+    "data":[]
+}
