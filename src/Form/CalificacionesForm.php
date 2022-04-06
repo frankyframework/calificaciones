@@ -46,7 +46,7 @@ class CalificacionesForm extends \Franky\Form\Form
 
         $this->add(array(
                 'name' => 'nombre',
-                'label' => 'Nombre:',
+                'label' => _('Nombre'),
                 'type'  => 'text',
                 'required'  => true,
                 'atributos' => array(
@@ -60,7 +60,7 @@ class CalificacionesForm extends \Franky\Form\Form
         );
         $this->add(array(
             'name' => 'email',
-            'label' => 'E-mail:',
+            'label' => _('E-mail'),
             'type'  => 'text',
             'required'  => true,
             'atributos' => array(
@@ -74,7 +74,7 @@ class CalificacionesForm extends \Franky\Form\Form
         );
         $this->add(array(
             'name' => 'titulo',
-            'label' => 'Titulo:',
+            'label' => _('Titulo'),
             'type'  => 'text',
             'required'  => true,
             'atributos' => array(
@@ -88,7 +88,7 @@ class CalificacionesForm extends \Franky\Form\Form
         );
         $this->add(array(
                 'name' => 'comentario',
-                'label' => 'Comentario:',
+                'label' => _('Comentario'),
                 'type'  => 'textarea',
                 'required'  => false,
                 'atributos' => array(
@@ -107,7 +107,7 @@ class CalificacionesForm extends \Franky\Form\Form
                 'type'  => 'submit',
                 'atributos' => array(
                     'class'       => 'btn btn-primary btn-big float_right',
-                    'value' => "Guardar"
+                    'value' => _("Guardar")
                  )
 
             )

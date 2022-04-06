@@ -56,15 +56,15 @@ if($CalificacionesModel->getTotal() > 0)
         $iRow++;
     }
 }
-$title_grid = "Calificaciones y comentarios";
+$title_grid = _calificaciones("Calificaciones y comentarios");
 $class_grid = "calificaciones";
-$error_grid = "No hay calificaciones y/o comentarios registrados";
+$error_grid = _calificaciones("No hay calificaciones y/o comentarios registrados");
 $deleteFunction = "Calificaciones_AprovarCalificacion";
 
 $frm_constante_link = "";
 $MyFrankyMonster->setPHPFile(PROJECT_DIR."/modulos/calificaciones/diseno/admin/calificaciones/aprovar.phtml");
 
-$titulo_columnas_grid = array("createdAt" => "Fecha",'item' => "Item", "nombre" =>  "Nombre","titulo" => "Titulo","calificacion" => "Calificacion");
+$titulo_columnas_grid = array("createdAt" => _("Fecha"),'item' => _("Item"), "nombre" =>  _("Nombre"),"titulo" => _("Titulo"),"calificacion" => _("Calificacion"));
 $value_columnas_grid = array("createdAt" ,'item', "nombre","titulo","calificacion");
 $css_columnas_grid = array("createdAt" => "w-xxxx-1" ,'item' => "w-xxxx-3" ,"nombre" => "w-xxxx-2", "titulo" => "w-xxxx-3", "calificacion" => "w-xxxx-1");
 

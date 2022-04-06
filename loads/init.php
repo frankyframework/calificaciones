@@ -3,7 +3,7 @@ use Franky\Core\ObserverManager;
 $ObserverManager = new ObserverManager;
 include 'lca.php';
 include 'util.php';
-bindtextdomain("calificaciones", PROJECT_DIR ."/modulos/calificaciones/locale");
+__bindtextdomain("calificaciones", "calificaciones");
 
 
 if (function_exists('bind_textdomain_codeset')) 
