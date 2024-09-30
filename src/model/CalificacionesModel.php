@@ -9,6 +9,7 @@ class CalificacionesModel  extends \Franky\Database\Mysql\objectOperations
     private $tabla_item;
     private $busca;
     private $userData;
+    private $itemData;
 
     public function __construct()
     {
@@ -19,6 +20,10 @@ class CalificacionesModel  extends \Franky\Database\Mysql\objectOperations
     
     function setUserData($data){
         $this->userData = $this->optimizeEntity($data);
+        
+    }
+    function setItemData($data){
+        $this->itemData = $this->optimizeEntity($data);
         
     }
     function setCampos($campos)
@@ -99,6 +104,13 @@ class CalificacionesModel  extends \Franky\Database\Mysql\objectOperations
             foreach($this->userData as $k => $v)
             {
                 $this->where()->addAnd("calificaciones_users.".$k,$v,'=');
+            }
+        }
+        if(!empty( $this->itemData ))
+        {
+            foreach($this->itemData as $k => $v)
+            {
+                $this->where()->addAnd($this->tabla_item.".".$k,$v,'=');
             }
         }
          if(!empty($this->busca) )

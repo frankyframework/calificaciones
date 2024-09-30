@@ -151,11 +151,11 @@ function calificaciones_getStarsHTML($cal)
 	{
 		if($cal <= 0)
 		{
-			$html .= "<i class='icon icon-estrella-llena _alpha'></i>";
+			$html .= "<i class='icon icon-estrella-vacia _alpha'></i>";
 		}
 		elseif($cal > 0 && $cal < .4)
 		{
-			$html .= "<i class='icon icon-estrella-llena _alpha'></i>";
+			$html .= "<i class='icon icon-estrella-vacia _alpha'></i>";
 			$cal = 0;
 		}
                 elseif($cal == .5)
