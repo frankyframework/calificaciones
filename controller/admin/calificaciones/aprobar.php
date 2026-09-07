@@ -14,7 +14,6 @@ if ($MyRequest->isAjax()) {
     }
     $CalificacionesModel = new \Calificaciones\model\CalificacionesModel();
     $CalificacionesEntity = new \Calificaciones\entity\CalificacionesEntity($request);
-    $CalificacionesusersEntity = new \Calificaciones\entity\CalificacionesusersEntity();
     $Tokenizer = new \Franky\Haxor\Tokenizer();
 
     $alias = ['createdAt' => "calificaciones_calificaciones.createdAt"];
@@ -33,15 +32,12 @@ if ($MyRequest->isAjax()) {
     $CalificacionesModel->setTampag($MyRequest->getRequest('rows',12));
     $CalificacionesModel->setOrdensql($sortInput." ".$MyRequest->getRequest('sord',"ASC"));
     $CalificacionesEntity->tabla($tabla);
-    $CalificacionesEntity->aprovado(1);
+    $CalificacionesEntity->aprovado(0);
     $CalificacionesEntity->status(1);
+    $CalificacionesEntity->status_admin(1);
     $CalificacionesModel->setCampoItem($campo_item);
     $CalificacionesModel->setTablaItem($tabla);
     $CalificacionesModel->setCampoItemId($campo_item_id);
-    $result	 = $CalificacionesModel->getFullData($CalificacionesEntity->getArrayCopy());
- 
-    $CalificacionesusersEntity->id_user($MySession->GetVar('id'));
-    $CalificacionesModel->setUserData($CalificacionesusersEntity->getArrayCopy());
     $result	 = $CalificacionesModel->getFullData($CalificacionesEntity->getArrayCopy());
     $dataRows = ["rows" => [], "total" => ceil($CalificacionesModel->getTotal() / $MyRequest->getRequest('rows',12)), "page" => (int)$MyRequest->getRequest('page',1),"records" => $CalificacionesModel->getTotal()];
 
@@ -50,15 +46,15 @@ if ($MyRequest->isAjax()) {
 
         while($registro = $CalificacionesModel->getRows())
         {
-            $registro = array_filter($registro, function($llave) {
-                    return !is_numeric($llave);
-            }, ARRAY_FILTER_USE_KEY);
+                $registro = array_filter($registro, function($llave) {
+                        return !is_numeric($llave);
+                }, ARRAY_FILTER_USE_KEY);
 
-            $dataRows['rows'][] = array_merge($registro,array(
+
+                $dataRows['rows'][] = array_merge($registro,array(
                     "calificacion" => calificaciones_getStarsHTML($registro['calificacion']),
-                    "nombre" => (!empty($registro['nombre_guest']) ? $registro['nombre_guest'] : $registro['nombre']),
+                    "createdAt" => getFechaUI($registro['createdAt']),
                     "id" => $Tokenizer->token('calificaciones',$registro["id"]),
-                    "status"  => ($registro["status"] == 1 ?"desactivar" : "activar"),
             ));
         }
     }
@@ -69,7 +65,6 @@ if ($MyRequest->isAjax()) {
     $MyMetatag->setJs("/public/plugins/jqGrid/js/jquery.jqGrid.js");
     $MyMetatag->setJs("/public/plugins/jqGrid/js/i18n/grid.locale-$lang_root.js");
     $MyMetatag->setCSS("/public/plugins/jqGrid/css/ui.jqgrid.css");
-    $MyFrankyMonster->setPHPFile(PROJECT_DIR."/modulos/calificaciones/diseno/admin/calificaciones/lista_admin.phtml");
-    $deleteFunction = "Calificaciones_StatusCalificacion";
+    $MyFrankyMonster->setPHPFile(PROJECT_DIR."/modulos/calificaciones/diseno/admin/calificaciones/aprobar.phtml");
 
 }

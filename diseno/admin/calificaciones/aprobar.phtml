@@ -1,7 +1,7 @@
 <div class="content">
     <div class="w-xxxx-12"><?php echo breadcrumbs(); ?> </div>
         <div class="w-xxxx-12 cont_global_admin">
-        <h1 class="titulo_seccion_admin"><?= _calificaciones("Calificaciones y comentarios") ?></h1>
+        <h1 class="titulo_seccion_admin"><?= _calificaciones("Aprovar calificaciones y comentarios") ?></h1>
         <div class="w-xxxx-12 cont_header_panel">
             <div class="_wrapp_form_serch">
                 <form name="buscarGrid" action="" method="get" id="paginar">                
@@ -11,8 +11,8 @@
         </div>
 
         <div  class="w-xxxx-12 cont_gral_admin calificaciones">
-        <table id="jqGrid"></table>
-        <div id="jqGridPager"></div>
+            <table id="jqGrid"></table>
+            <div id="jqGridPager"></div>
         </div>
     </div>
 </div>
@@ -30,11 +30,11 @@ $(window).load(function(){
         redirectPath : '',
         pathData : window.location.pathname,
         error : "<?=_calificaciones("No hay calificaciones y/o comentarios registrados")?>",
-        deleteFunction : "<?= $deleteFunction ?>",
+        deleteFunction : "Calificaciones_AprovarCalificacion",
         colModel: [
             { label: '<?=_('ID')?>', name: 'id', key:true, hidden:true, width: 50 },
             { label: '<?=_('Comentario')?>', name: 'comentario', hidden:true, width: 50 },
-            { label: '<?=_('Fecha')?>', name: 'createdAt', width: 200, hidden:isGridMobile,
+            { label: '<?=_('Fecha')?>', name: 'createdAt', hidden:isGridMobile, width: 200,
                 
                 searchoptions: {
                     dataInit: function (element) {
@@ -52,7 +52,7 @@ $(window).load(function(){
             { label: '<?=_('Nombre')?>', name: 'nombre', hidden:isGridMobile, width: 250, search:false },
             { label: '<?=_('Email')?>', name: 'email', hidden:isGridMobile, width: 250, search:false },
             { label: '<?=_('Titulo')?>', name: 'titulo', width: 250 },
-            { label: '<?=_('Calificacion')?>', name: 'calificacion', hidden:isGridMobile, width: 250, search: false },
+            { label: '<?=_('Calificacion')?>', name: 'calificacion', hidden:isGridMobile, width: 250 },
             { 
             name: 'acciones', 
             index: 'acciones', 
@@ -73,9 +73,10 @@ $(window).load(function(){
     var id = options.rowId; // Obtiene el ID único de la fila actual
      
     var icon_delete = (rowObject.status  == "activar" ? 'icon-c-encender' : 'icon-r-eliminar');
-    var boton1 = '<a class="btn_adm_eliminar " data-id="'+id+'" href="#'+rowObject.status+'"><span class="icon '+icon_delete+'"> </span></a>';
+    var boton1 = '<a class="btn_adm_eliminar " data-id="'+id+'" href="#activar"><span class="icon icon-valido"> </span></a> ';
+    var boton2 = '<a class="btn_adm_eliminar " data-id="'+id+'" href="#desactivar"><span class="icon '+icon_delete+'"> </span></a>';
  
-    return boton1;                       
+    return boton1 + boton2;                       
 }
 
 function showChildGrid(parentRowID, parentRowKey) {
@@ -91,11 +92,11 @@ function showChildGrid(parentRowID, parentRowKey) {
             $('#' + parentRowID).append('<p>Fecha: '+fecha+'</p>');
             $('#' + parentRowID).append('<p>Nombre: '+nombre+'</p>');
             $('#' + parentRowID).append('<p>URL: '+email+'</p>');
-            $('#' + parentRowID).append('<p>Calificacion: '+calificacion+'</p>');
+            $('#' + parentRowID).append('<p>Idioma: '+calificacion+'</p>');
             
         }
+        
         var comentario  = $(this).find('#' + parentRowKey + ' td[aria-describedby$="_comentario"]').text();
-      
         $('#' + parentRowID).append('<p>'+comentario+'</p>');
 
 

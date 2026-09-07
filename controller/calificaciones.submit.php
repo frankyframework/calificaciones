@@ -133,17 +133,19 @@ if($error == false)
         else{
             $CalificacionesgeneralesModel->save($CalificacionesgeneralesEntity->getArrayCopy());      
         }
-        if(!$MySession->LoggedIn())
-        {
-            $CalificacionesguestEntity->id_calificacion($id);
-            $CalificacionesguestModel->save($CalificacionesguestEntity->getArrayCopy());
-        }
-        else
+    
+        if($MySession->LoggedIn())
         {
             $CalificacionesusersEntity->id_calificacion($id);
             $CalificacionesusersEntity->id_user($MySession->GetVar('id'));
             $CalificacionesusersModel->save($CalificacionesusersEntity->getArrayCopy());      
         }
+        if($MySession->LoggedIn()){
+            $CalificacionesguestEntity->nombre($MySession->GetVar('nombre'));
+            $CalificacionesguestEntity->email($MySession->GetVar('email'));
+        }
+        $CalificacionesguestEntity->id_calificacion($id);
+        $CalificacionesguestModel->save($CalificacionesguestEntity->getArrayCopy());
         $location = $callback;
 
     }

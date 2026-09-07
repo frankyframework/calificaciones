@@ -7,7 +7,6 @@ class CalificacionesModel  extends \Franky\Database\Mysql\objectOperations
     private $campo_item;
     private $campo_item_id;
     private $tabla_item;
-    private $busca;
     private $userData;
     private $itemData;
 
@@ -44,10 +43,7 @@ class CalificacionesModel  extends \Franky\Database\Mysql\objectOperations
     {
         $this->tabla_item = $tabla;
     }
-    function setBusca($busca)
-    {
-        $this->busca = $busca;
-    }
+
 
     function getData($data = array())
     {
@@ -88,15 +84,34 @@ class CalificacionesModel  extends \Franky\Database\Mysql\objectOperations
             "calificaciones_calificaciones.titulo",
             "calificaciones_calificaciones.comentario",
             $this->tabla_item.'.'.$this->campo_item.' as item',
-            "calificaciones_guest.nombre as nombre_guest",
-            "calificaciones_guest.email",
-            "users.nombre"
+            "calificaciones_guest.nombre",
+            "calificaciones_guest.email"
         ];
 
         
         foreach($data as $k => $v)
         {
-            $this->where()->addAnd("calificaciones_calificaciones.".$k,$v,'=');
+            if(!empty($v) || is_numeric($v))
+            {
+                if(is_array($v))
+                {
+                    $this->where()->concat('AND (');
+                    foreach ($v as $_v)
+                    {
+                        $this->where()->addOr("calificaciones_calificaciones.".$k,$_v,'=');
+
+                    }
+                    $this->where()->concat(')');
+                }
+                else
+                {
+                    if(in_array($k,['id','aprovado','status'])) {
+                        $this->where()->addAnd("calificaciones_calificaciones.".$k,$v,'=');
+                    } else {
+                        $this->where()->addAnd("calificaciones_calificaciones.".$k,"%".$v."%",'like');
+                    }
+                } 
+            }
         }
 
         if(!empty( $this->userData ))
@@ -110,24 +125,33 @@ class CalificacionesModel  extends \Franky\Database\Mysql\objectOperations
         {
             foreach($this->itemData as $k => $v)
             {
-                $this->where()->addAnd($this->tabla_item.".".$k,$v,'=');
+                if(!empty($v) || is_numeric($v))
+                {
+                    if(is_array($v))
+                    {
+                        $this->where()->concat('AND (');
+                        foreach ($v as $_v)
+                        {
+                            $this->where()->addOr($this->tabla_item.".".$k,$_v,'=');
+    
+                        }
+                        $this->where()->concat(')');
+                    }
+                    else
+                    {
+                        if(in_array($k,[$this->campo_item_id])) {
+                            $this->where()->addAnd($this->tabla_item.".".$k,$v,'=');
+                        } else {
+                            $this->where()->addAnd($this->tabla_item.".".$k,"%".$v."%",'like');
+                        }
+                    } 
+                }
             }
         }
-         if(!empty($this->busca) )
-        {
 
-            $this->where()->concat("AND (");
-           
-                $this->where()->addOr('calificaciones_calificaciones.titulo',"%$this->busca%",'like');
-                $this->where()->addOr($this->tabla_item.'.'.$this->campo_item,"%$this->busca%",'like');
-                $this->where()->addOr('calificaciones_calificaciones.comentario',"%$this->busca%",'like');
-                $this->where()->concat(')');
-
-        }
         $this->from()->addInner($this->tabla_item,'calificaciones_calificaciones.id_item',$this->tabla_item.'.'.$this->campo_item_id);
         $this->from()->addLeft("calificaciones_guest",'calificaciones_calificaciones.id','calificaciones_guest.id_calificacion');
         $this->from()->addLeft("calificaciones_users",'calificaciones_calificaciones.id','calificaciones_users.id_calificacion');
-        $this->from()->addLeft("users",'calificaciones_users.id_user','users.id');
 
         return $this->getColeccion($campos);
 

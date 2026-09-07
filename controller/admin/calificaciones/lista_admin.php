@@ -1,80 +1,69 @@
 <?php
-$CalificacionesModel = new \Calificaciones\model\CalificacionesModel();
-$CalificacionesEntity = new \Calificaciones\entity\CalificacionesEntity();
-$Tokenizer = new \Franky\Haxor\Tokenizer();
-$MyPaginacion = new \Franky\Core\paginacion();   
+if ($MyRequest->isAjax()) {
 
-$MyPaginacion->setPage($MyRequest->getRequest('page',1));
-$MyPaginacion->setCampoOrden($MyRequest->getRequest('por',"calificaciones_calificaciones.createdAt"));
-$MyPaginacion->setOrden($MyRequest->getRequest('order',"DESC"));
-$MyPaginacion->setTampageDefault($MyRequest->getRequest('tampag',25));
-$busca_b	= $MyRequest->getRequest('busca_b');
-    
-$alias = ['createdAt' => "calificaciones_calificaciones.createdAt"];
-if(isset($alias[$MyRequest->getRequest('por')]))
-{
-    $orden = $alias[$MyRequest->getRequest('por')];
-}
-else{
-    $orden = $MyPaginacion->getCampoOrden();
-}
-
-$CalificacionesModel->setPage($MyPaginacion->getPage());
-$CalificacionesModel->setTampag($MyPaginacion->getTampageDefault());
-$CalificacionesModel->setOrdensql($orden." ".$MyPaginacion->getOrden());
-
-$CalificacionesEntity->tabla($tabla);
-$CalificacionesEntity->aprovado(1);
-$CalificacionesEntity->status(1);
-$CalificacionesModel->setBusca($busca_b);
-$CalificacionesModel->setCampoItem($campo_item);
-$CalificacionesModel->setTablaItem($tabla);
-$CalificacionesModel->setCampoItemId($campo_item_id);
-$result	 = $CalificacionesModel->getFullData($CalificacionesEntity->getArrayCopy());
-$MyPaginacion->setTotal($CalificacionesModel->getTotal());
-$lista_admin_data = array();
-
-
-if($CalificacionesModel->getTotal() > 0)
-{
-
-    $iRow = 0;
-
-    while($registro = $CalificacionesModel->getRows())
-    {
-        $thisClass  = ((($iRow % 2) == 0) ? "formFieldDk" : "formFieldLt");
-        
-        $lista_admin_data[$iRow] = array_merge($registro,array(
-                "thisClass"     => $thisClass,
-                "calificacion" => calificaciones_getStarsHTML($registro['calificacion']),
-                "nombre" => (!empty($registro['nombre_guest']) ? $registro['nombre_guest'] : $registro['nombre']),
-                "id" => $Tokenizer->token('calificaciones',$registro["id"]),
-                "callback" => $Tokenizer->token('calificaciones',$MyRequest->getURI()),
-                "nuevo_estado"  => ($registro["status_admin"] == 1 ?"desactivar" : "activar"),
-        ));
-
-
-        $iRow++;
+    $callback	= $MyRequest->getRequest('callback');
+    $filters = $MyRequest->getRequest('filters');
+    $dataPost = json_decode(stripslashes($filters),true);
+    $dataPost = $dataPost['rules'];
+    $requestFranky = [];
+    $request = [];
+    foreach($dataPost as $data) {
+      
+      $request[$data['field']] = $MyRequest->Sanitizacion($data['data']);
+      
     }
+    $CalificacionesModel = new \Calificaciones\model\CalificacionesModel();
+    $CalificacionesEntity = new \Calificaciones\entity\CalificacionesEntity($request);
+    $Tokenizer = new \Franky\Haxor\Tokenizer();
+
+    $alias = ['createdAt' => "calificaciones_calificaciones.createdAt"];
+    if(isset($alias[$MyRequest->getRequest('sidx')]))
+    {
+        $sortInput = $alias[$MyRequest->getRequest('sidx')];
+    }
+    else{
+        $sortInput  = (!empty($MyRequest->getRequest('sidx',"calificaciones_calificaciones.createdAt")) ? : "calificaciones_calificaciones.createdAt");
+    }
+    if(!empty($request['item'])) {
+        $CalificacionesModel->setItemData([$campo_item => $request['item']]);
+    }
+    $CalificacionesModel->setPage($MyRequest->getRequest('page',1));
+    $CalificacionesModel->setTampag($MyRequest->getRequest('rows',12));
+    $CalificacionesModel->setOrdensql($sortInput." ".$MyRequest->getRequest('sord',"ASC"));
+    $CalificacionesEntity->tabla($tabla);
+    $CalificacionesEntity->aprovado(1);
+    $CalificacionesEntity->status(1);
+    $CalificacionesModel->setCampoItem($campo_item);
+    $CalificacionesModel->setTablaItem($tabla);
+    $CalificacionesModel->setCampoItemId($campo_item_id);
+    $result	 = $CalificacionesModel->getFullData($CalificacionesEntity->getArrayCopy());
+    $dataRows = ["rows" => [], "total" => ceil($CalificacionesModel->getTotal() / $MyRequest->getRequest('rows',12)), "page" => (int)$MyRequest->getRequest('page',1),"records" => $CalificacionesModel->getTotal()];
+
+
+    if($CalificacionesModel->getTotal() > 0)
+    {
+
+        while($registro = $CalificacionesModel->getRows())
+        {
+            $registro = array_filter($registro, function($llave) {
+                    return !is_numeric($llave);
+            }, ARRAY_FILTER_USE_KEY);
+
+
+            $dataRows['rows'][] = array_merge($registro,array(
+                    "calificacion" => calificaciones_getStarsHTML($registro['calificacion']),
+                    "id" => $Tokenizer->token('calificaciones',$registro["id"]),
+                    "status"  => ($registro["status_admin"] == 1 ?"desactivar" : "activar"),
+            ));
+        }
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $callback . '(' . json_encode($dataRows). ');';
+    die;
+} else {
+    $MyMetatag->setJs("/public/plugins/jqGrid/js/jquery.jqGrid.js");
+    $MyMetatag->setJs("/public/plugins/jqGrid/js/i18n/grid.locale-$lang_root.js");
+    $MyMetatag->setCSS("/public/plugins/jqGrid/css/ui.jqgrid.css");
+    $MyFrankyMonster->setPHPFile(PROJECT_DIR."/modulos/calificaciones/diseno/admin/calificaciones/lista_admin.phtml");
+    $deleteFunction = "Calificaciones_StatusAdminCalificacion";
 }
-$title_grid = _calificaciones("Calificaciones y comentarios");
-$class_grid = "calificaciones";
-$error_grid = _calificaciones("No hay calificaciones y/o comentarios registrados");
-$deleteFunction = "Calificaciones_StatusAdminCalificacion";
-
-$frm_constante_link = "";
-$MyFrankyMonster->setPHPFile(PROJECT_DIR."/modulos/calificaciones/diseno/admin/calificaciones/lista_admin.phtml");
-
-$titulo_columnas_grid = array("createdAt" => _("Fecha"),'item' => _("Item"), "nombre" =>  _("Nombre"),"titulo" => _("Titulo"),"calificacion" => _("Calificacion"));
-$value_columnas_grid = array("createdAt" ,'item', "nombre","titulo","calificacion");
-$css_columnas_grid = array("createdAt" => "w-xxxx-1" ,'item' => "w-xxxx-3" ,"nombre" => "w-xxxx-2", "titulo" => "w-xxxx-3", "calificacion" => "w-xxxx-1");
-
-
-$permisos_grid = $permisos_grid;
-
-$MyFiltrosForm = new \Base\Form\filtrosForm('paginar');
-$MyFiltrosForm->setMobile($Mobile_detect->isMobile());
-$MyFiltrosForm->addBusca();
-$MyFiltrosForm->addSubmit();
-
-$MyFiltrosForm->setAtributoInput("busca_b", "value",$busca_b);
